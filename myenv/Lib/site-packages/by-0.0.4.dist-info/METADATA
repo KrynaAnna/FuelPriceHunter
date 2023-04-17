@@ -1,0 +1,19 @@
+Metadata-Version: 2.1
+Name: by
+Version: 0.0.4
+Summary: selection tools
+Home-page: https://github.com/thorwhalen/uu/tree/master/by
+Author: Thor Whalen
+License: mit
+Platform: any
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+
+# by
+selection tools
+
+
+To install:	```pip install by```
+
+

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fuel prices</title>
+    <!-- My CSS only -->
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <!-- Bootstrap CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <!-- Bootstrap JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity=
+            "sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="left-container  text-center">
+            <img src="../static/images/car.png" alt="gas station and car" width="600">
+            <h1>FUEL</h1>
+            <h3>price by province or city</h3>
+            <h2>now</h2>
+        </div>
+
+        <div class="right-container text-center">
+            {% if not user_name %}
+                <div class="container mt-5">
+                  <div class="card">
+                    <div class="card-body">
+                      <h1 class="card-title">Hello, Guest!</h1>
+                      <p class="card-text">Welcome to our website. We're glad you're here!</p>
+                      <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+                      <a href="{{ url_for('register') }}" class="btn btn-primary">Sign up</a>
+                    </div>
+                  </div>
+                </div>
+            {% else %}
+                <div>
+                    <div style="margin-bottom: 50px; text-align: end;"><a href="{{ url_for('logout') }}">Logout</a></div>
+                    <h1 class="card-title">Hello, {{ user_name }}!</h1>
+                    <form id="user_form" name="user_form" method="POST" action="{{ url_for('home') }}">
+                        <div class="mb-3 text-start">
+                            <label for="typeoffuel" class="form-label">Choose the type of fuel:</label>
+                            <select id="typeoffuel" class="form-select text-center" name="typeoffuel" required>
+                                {% if fuel %}
+                                    <option value="{{ fuel }}" selected>{{ fuel }}</option>
+                                {% endif %}
+                                {% for f in typesoffuel %}
+                                    <option value="{{ f }}">{{ f }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3 text-start">
+                            <label for="frequency" class="form-label">Choose the notification frequency: </label>
+                            <select id="frequency" class="form-select text-center" name="frequency" required>
+                                {% if freq %}
+                                    <option value="{{ freq }}" selected>{{ freq }}</option>
+                                {% endif %}
+                                {% for q in frequency %}
+                                    <option value="{{ q }}">{{ q }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3 text-start">
+                            <label for="province" class="form-label">Choose your province: </label>
+                            <select id="province" class="form-select text-center" name="province" required>
+                                {% if prov %}
+                                    <option value="{{ prov }}" selected>{{ prov }}</option>
+                                {% endif %}
+                                {% for p in provinces %}
+                                    <option value="{{ p }}">{{ p }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3 text-start">
+                            <label for="city" class="form-label">Choose your city: </label>
+                            <select id="city" class="form-select text-center" name="city" required>
+                              {% if city %}
+                                <option value="{{ city }}" selected>{{ city }}</option>
+                              {% endif %}
+                              {% for c in cities %}
+                                <option value="{{ c }}">{{ c }}</option>
+                              {% endfor %}
+                            </select>
+                        </div>
+                    <button class="btn btn-primary btn-lg" type="submit" form="user_form">Subscribe</button>
+                    <a href="{{ url_for('unsubscribe') }}">
+                      <button class="btn btn-warning btn-lg" type="button">Unsubscribe</button>
+                    </a>
+                    {% if gratulation == 'true' %}
+                        <h3 class="text-success">Subscribed!!!</h3>
+                    {% elif gratulation == 'false' %}
+                        <h3 class="text-warning">Unsubscribed!!!</h3>
+                    {% endif %}
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+<script>
+  // get references to the select elements
+  const provinceSelect = document.getElementById('province');
+  const citySelect = document.getElementById('city');
+
+  // add an event listener to the province select element
+  provinceSelect.addEventListener('change', async () => {
+    // get the selected province value
+    const selectedProvince = provinceSelect.value;
+
+    // make an API request to get the cities based on the selected province
+    const url = "https://countriesnow.space/api/v0.1/countries/state/cities";
+    const payload = {country: "Canada", state: selectedProvince};
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+    const cities = await response.json();
+
+    // clear the current options of the city select element
+    citySelect.innerHTML = '';
+    // add the new city options to the city select element
+    cities.data.map(city => {
+      const option = document.createElement('option');
+      option.value = city;
+      option.text = city;
+      citySelect.appendChild(option);
+    });
+
+    citySelect.style.width = "250px";
+     });
+</script>
+
+</html>
