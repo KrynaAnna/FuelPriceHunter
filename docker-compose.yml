@@ -1,0 +1,18 @@
+version: '3'
+services:
+  app:
+    container_name: fuelpricehunter
+    build: .
+    ports:
+      - "8000:5000"
+#  db_sqlite:
+#    container_name: db_sqlite
+#    image: nouchka/sqlite3:latest
+#    volumes:
+#      - /instance:/fuelpricehunter/instance
+#    environment:
+#      - SQLITE_DATABASE=/instance/data.db
+#    ports:
+#      - "5432:5432"
+#    depends_on:
+#      - app

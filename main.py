@@ -1,7 +1,7 @@
 import copy
 import datetime
 import json
-from random import randint
+import os
 
 import requests
 from flask import Flask, render_template, redirect, request, url_for, session
@@ -24,7 +24,7 @@ db = SQLAlchemy(app)
 
 # CREATE TABLE
 class User(db.Model):
-    user_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
@@ -129,7 +129,6 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     elif request.method == 'POST':
-        print(request.form)
         email = request.form['email']
         password = request.form['password']
 
@@ -189,4 +188,5 @@ def unsubscribe():
 
 # Run the app
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
