@@ -45,7 +45,7 @@ def get_info(province_, city_, fuel_):
         information_for_mail.append((item['title'], ' ', item['gasPrices'][fuel_index]['priceTag'], ' ',
                                      item['gasPrices'][fuel_index]['gasType'], ' ', item['street']))
 
-    information_for_mail.sort(key=lambda x: x[1])
+    information_for_mail = information_for_mail.sort(key=lambda x: x[1])
 
     return information_for_mail[:5]
 
