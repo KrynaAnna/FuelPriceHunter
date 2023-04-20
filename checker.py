@@ -7,8 +7,8 @@ from apify_client import ApifyClient
 from trycourier import Courier
 
 
-engine = sqlalchemy.create_engine('mysql://yelenkovbohdan:samurai17@yelenkovbohdan.mysql.pythonanywhere-services'
-                                  '.com/yelenkovbohdan$data')
+engine = sqlalchemy.create_engine('mysql://AnnaK:samurai17@AnnaK.mysql' \
+                                        '.pythonanywhere-services.com/AnnaK$data')
 
 # read table from database
 database = pd.read_sql_table('user', engine)
