@@ -18,8 +18,8 @@ app.config['SECRET_KEY'] = '8BYkEfBA1O6do2nzWlSihBXox7C0hn4ksKR6b'
 Bootstrap(app)
 
 # Create database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://yelenkovbohdan:samurai17@yelenkovbohdan.mysql' \
-                                        '.pythonanywhere-services.com/yelenkovbohdan$data'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://AnnaK:samurai17@AnnaK.mysql' \
+                                        '.pythonanywhere-services.com/AnnaK$data'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
