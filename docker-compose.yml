@@ -4,7 +4,7 @@ services:
     container_name: fuelpricehunter
     build: .
     ports:
-      - "8000:5000"
+      - "8000:8000"
 #  db_sqlite:
 #    container_name: db_sqlite
 #    image: nouchka/sqlite3:latest
