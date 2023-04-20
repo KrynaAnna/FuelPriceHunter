@@ -1,14 +1,15 @@
 import copy
 import datetime
+import hashlib
 import json
 import os
 
 import requests
-from flask import Flask, render_template, redirect, request, url_for, session
+from flask import Flask, redirect, render_template, request, session, url_for
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
-from werkzeug.security import generate_password_hash, check_password_hash
+
 from additional import provinces
 
 
@@ -16,22 +17,23 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA1O6do2nzWlSihBXox7C0hn4ksKR6b'
 Bootstrap(app)
 
-# CREATE DATABASE
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///data.db"
+# Create database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://yelenkovbohdan:samurai17@yelenkovbohdan.mysql' \
+                                        '.pythonanywhere-services.com/yelenkovbohdan$data'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
-# CREATE TABLE
+# Create table
 class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
-    type_of_fuel = db.Column(db.String(20), nullable=True)
-    province = db.Column(db.String(20), nullable=True)
-    city = db.Column(db.String(20), nullable=True)
-    frequency = db.Column(db.String(10), nullable=True)
+    type_of_fuel = db.Column(db.String(25), nullable=True)
+    province = db.Column(db.String(25), nullable=True)
+    city = db.Column(db.String(25), nullable=True)
+    frequency = db.Column(db.String(25), nullable=True)
     next_date = db.Column(db.Date, nullable=True)
     code = db.Column(db.Integer, nullable=True)
 
@@ -45,25 +47,25 @@ with app.app_context():
 def home():
     if 'user_id' in session:
         user = User.query.get(int(session['user_id']))
-        if request.method == 'GET':
-            typesoffuel = ['Regular gas', 'Premium gas', 'Diesel']
-            frequency = ['Every day', 'Once a week', 'Twice a month', 'Once a month']
-            provinces_ = copy.deepcopy(provinces)
-
+        typesoffuel = ['Regular gas', 'Premium gas', 'Diesel']
+        frequency = ['Every day', 'Once a week', 'Twice a month', 'Once a month']
+        provinces_ = copy.deepcopy(provinces)
+        if request.method == 'GET' and user.province:
             url = "https://countriesnow.space/api/v0.1/countries/state/cities"
-            if user.province:
-                payload = {'country': "Canada", 'state': user.province}
-                response = requests.request("POST", url, data=payload)
-                cities = json.loads(response.text)['data']
-            else:
-                payload = {'country': "Canada", 'state': "Alberta"}
-                response = requests.request("POST", url, data=payload)
-                cities = json.loads(response.text)['data']
+            payload = {'country': "Canada", 'state': user.province}
+            response = requests.request("POST", url, data=payload)
+            cities = json.loads(response.text)['data']
             return render_template('home.html',
                                    fuel=user.type_of_fuel, typesoffuel=typesoffuel,
                                    freq=user.frequency, frequency=frequency,
                                    prov=user.province, provinces=provinces_,
                                    city=user.city, cities=cities, user_name=user.name)
+        elif request.method == 'GET':
+            return render_template('home.html',
+                                   fuel='', typesoffuel=typesoffuel,
+                                   freq='', frequency=frequency,
+                                   prov='', provinces=provinces_,
+                                   city='', user_name=user.name if user.name else '')
 
         if request.method == 'POST':
             typesoffuel = ['Regular gas', 'Premium gas', 'Diesel']
@@ -108,7 +110,12 @@ def register():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
-        password_hash = generate_password_hash(password)
+
+        salt = 'ho64dv4512hgfjuul'
+        password_salt = password.encode('utf-8') + salt.encode('utf-8')
+        hash_object = hashlib.sha256(password_salt)
+        password_hash = hash_object.hexdigest()
+        # password_hash = generate_password_hash(password, method='pbkdf2:sha256', salt='ho64dv')
 
         new_user = User(
             name=name,
@@ -133,7 +140,11 @@ def login():
         password = request.form['password']
 
         user = User.query.filter_by(email=email).first()
-        if user is not None and check_password_hash(user.password, password):
+        salt = 'ho64dv4512hgfjuul'
+        password_salt = password.encode('utf-8') + salt.encode('utf-8')
+        hash_object = hashlib.sha256(password_salt)
+        password_hash = hash_object.hexdigest()
+        if user is not None and user.password == password_hash:
             session['user_id'] = user.user_id
             return redirect(url_for('home'))
         else:
@@ -164,26 +175,7 @@ def unsubscribe():
     user.city = None
     user.next_date = None
     db.session.commit()
-    if request.method == 'GET':
-        typesoffuel = ['Regular gas', 'Premium gas', 'Diesel']
-        frequency = ['Once a week', 'Twice a month', 'Once a month']
-        provinces_ = copy.deepcopy(provinces)
-
-        url = "https://countriesnow.space/api/v0.1/countries/state/cities"
-        if user.province:
-            payload = {'country': "Canada", 'state': user.province}
-            response = requests.request("POST", url, data=payload)
-            cities = json.loads(response.text)['data']
-        else:
-            payload = {'country': "Canada", 'state': "Alberta"}
-            response = requests.request("POST", url, data=payload)
-            cities = json.loads(response.text)['data']
-        return render_template('home.html',
-                               fuel=user.type_of_fuel, typesoffuel=typesoffuel,
-                               freq=user.frequency, frequency=frequency,
-                               prov=user.province, provinces=provinces_,
-                               city=user.city, cities=cities, user_name=user.name,
-                               gratulation='false')
+    return redirect(url_for('home'))
 
 
 # Run the app

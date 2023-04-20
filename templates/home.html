@@ -44,6 +44,8 @@
                             <select id="typeoffuel" class="form-select text-center" name="typeoffuel" required>
                                 {% if fuel %}
                                     <option value="{{ fuel }}" selected>{{ fuel }}</option>
+                                {% else %}
+                                    <option value="" selected>Choose type of fuel...</option>
                                 {% endif %}
                                 {% for f in typesoffuel %}
                                     <option value="{{ f }}">{{ f }}</option>
@@ -55,6 +57,8 @@
                             <select id="frequency" class="form-select text-center" name="frequency" required>
                                 {% if freq %}
                                     <option value="{{ freq }}" selected>{{ freq }}</option>
+                                {% else %}
+                                    <option value="" selected>Choose frequency...</option>
                                 {% endif %}
                                 {% for q in frequency %}
                                     <option value="{{ q }}">{{ q }}</option>
@@ -66,6 +70,8 @@
                             <select id="province" class="form-select text-center" name="province" required>
                                 {% if prov %}
                                     <option value="{{ prov }}" selected>{{ prov }}</option>
+                                {% else %}
+                                    <option value="" selected>Choose province...</option>
                                 {% endif %}
                                 {% for p in provinces %}
                                     <option value="{{ p }}">{{ p }}</option>
@@ -77,6 +83,8 @@
                             <select id="city" class="form-select text-center" name="city" required>
                               {% if city %}
                                 <option value="{{ city }}" selected>{{ city }}</option>
+                              {% else %}
+                                    <option value="" selected>Choose city...</option>
                               {% endif %}
                               {% for c in cities %}
                                 <option value="{{ c }}">{{ c }}</option>
@@ -100,40 +108,40 @@
 </body>
 
 <script>
-  // get references to the select elements
-  const provinceSelect = document.getElementById('province');
-  const citySelect = document.getElementById('city');
+    // get references to the select elements
+    const provinceSelect = document.getElementById('province');
+    const citySelect = document.getElementById('city');
 
-  // add an event listener to the province select element
-  provinceSelect.addEventListener('change', async () => {
-    // get the selected province value
-    const selectedProvince = provinceSelect.value;
+    // add an event listener to the province select element
+    provinceSelect.addEventListener('change', async () => {
+        // get the selected province value
+        const selectedProvince = provinceSelect.value;
 
-    // make an API request to get the cities based on the selected province
-    const url = "https://countriesnow.space/api/v0.1/countries/state/cities";
-    const payload = {country: "Canada", state: selectedProvince};
+        // make an API request to get the cities based on the selected province
+        const url = "https://countriesnow.space/api/v0.1/countries/state/cities";
+        const payload = {country: "Canada", state: selectedProvince};
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+        const cities = await response.json();
+
+        // clear the current options of the city select element
+        citySelect.innerHTML = '';
+        // add the new city options to the city select element
+        cities.data.map(city => {
+            const option = document.createElement('option');
+            option.value = city;
+            option.text = city;
+            citySelect.appendChild(option);
+        });
+
+        citySelect.style.width = "250px";
     });
-    const cities = await response.json();
-
-    // clear the current options of the city select element
-    citySelect.innerHTML = '';
-    // add the new city options to the city select element
-    cities.data.map(city => {
-      const option = document.createElement('option');
-      option.value = city;
-      option.text = city;
-      citySelect.appendChild(option);
-    });
-
-    citySelect.style.width = "250px";
-     });
 </script>
 
 </html>

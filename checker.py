@@ -1,11 +1,14 @@
-import pandas as pd
 from datetime import datetime, timedelta
+
+import pandas as pd
 import pytz
 import sqlalchemy
-from trycourier import Courier
 from apify_client import ApifyClient
+from trycourier import Courier
 
-engine = sqlalchemy.create_engine('sqlite:///instance/data.db')
+
+engine = sqlalchemy.create_engine('mysql://yelenkovbohdan:samurai17@yelenkovbohdan.mysql.pythonanywhere-services'
+                                  '.com/yelenkovbohdan$data')
 
 # read table from database
 database = pd.read_sql_table('user', engine)
@@ -25,7 +28,7 @@ def get_info(province_, city_, fuel_):
         "maxCrawledPlacesPerSearch": 10,
     }
 
-    # Run the actor and wait for it to finish
+    # Run the API for getting das prices
     run = client.actor("natasha.lekh/gas-prices-scraper").call(run_input=run_input)
 
     fuel_index = 0
@@ -37,7 +40,7 @@ def get_info(province_, city_, fuel_):
     elif fuel_ == 'Diesel':
         fuel_index = 3
 
-    # Fetch and print actor results from the run's dataset (if there are any)
+    # Adding information about gas station and price to list
     for item in client.dataset(run["defaultDatasetId"]).iterate_items():
         information_for_mail.append((item['title'], ' ', item['gasPrices'][fuel_index]['priceTag'], ' ',
                                      item['gasPrices'][fuel_index]['gasType'], ' ', item['street']))
@@ -47,6 +50,7 @@ def get_info(province_, city_, fuel_):
     return information_for_mail[:5]
 
 
+# Sending notification by mail
 def send_mail(name_, email_, information_):
     client = Courier(auth_token="pk_prod_G824KWJR0D4YTBJ1BR61893JYX8S")
 
@@ -67,7 +71,7 @@ def send_mail(name_, email_, information_):
     return resp['requestId']
 
 
-# iterate over DataFrame rows
+# Iterate over DataFrame rows
 while date_today.date() != date_yesterday:
     for i, row in database.iterrows():
         next_date = row['next_date']
@@ -86,10 +90,9 @@ while date_today.date() != date_yesterday:
             elif user_freq == 'Once a month':
                 next_date = (date_today + timedelta(weeks=4)).date()
 
-            # update the row in the database
+            # Update the row in the database
             database.at[i, 'next_date'] = next_date
             # write the updated table back to the database
             database.to_sql('user', engine, if_exists='replace', index=False)
 
         date_yesterday = date_today
-        print('Sent!')
