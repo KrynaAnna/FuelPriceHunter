@@ -15,7 +15,6 @@ EasyProcess==1.1
 exceptiongroup==1.1.1
 Flask==2.2.3
 Flask-Bootstrap==3.3.7.1
-Flask-Sessions==0.1.5
 Flask-SQLAlchemy==3.0.3
 googlemaps==4.10.0
 greenlet==2.0.2
