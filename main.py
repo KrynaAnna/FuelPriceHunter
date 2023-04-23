@@ -18,8 +18,8 @@ app.config['SECRET_KEY'] = '8BYkEfBA1O6do2nzWlSihBXox7C0hn4ksKR6b'
 Bootstrap(app)
 
 # Create database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://yelenkovbohdan:samurai17@yelenkovbohdan.mysql' \
-                                        '.pythonanywhere-services.com/yelenkovbohdan$data'
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///data.db"
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://AnnaK:samurai17@AnnaK.mysql.pythonanywhere-services.com/AnnaK$data'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -59,7 +59,7 @@ def home():
                                    fuel=user.type_of_fuel, typesoffuel=typesoffuel,
                                    freq=user.frequency, frequency=frequency,
                                    prov=user.province, provinces=provinces_,
-                                   city=user.city, cities=cities, user_name=user.name)
+                                   city=user.city, cities=cities, user_name=user.name, next_date=user.next_date)
         elif request.method == 'GET':
             return render_template('home.html',
                                    fuel='', typesoffuel=typesoffuel,
@@ -95,7 +95,7 @@ def home():
                                    fuel=user.type_of_fuel, typesoffuel=typesoffuel,
                                    freq=user.frequency, frequency=frequency,
                                    prov=user.province, provinces=provinces_,
-                                   city=user.city, user_name=user.name, gratulation='true')
+                                   city=user.city, user_name=user.name, next_date=user.next_date)
 
     else:
         return render_template('home.html')
@@ -115,7 +115,6 @@ def register():
         password_salt = password.encode('utf-8') + salt.encode('utf-8')
         hash_object = hashlib.sha256(password_salt)
         password_hash = hash_object.hexdigest()
-        # password_hash = generate_password_hash(password, method='pbkdf2:sha256', salt='ho64dv')
 
         new_user = User(
             name=name,
@@ -162,7 +161,6 @@ def forget_password():
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
-    session.pop('user_name', None)
     return redirect(url_for('home'))
 
 

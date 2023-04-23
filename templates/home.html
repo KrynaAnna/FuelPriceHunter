@@ -1,113 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
-    <title>Fuel prices</title>
-    <!-- My CSS only -->
-    <link rel="stylesheet" href="../static/css/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
     <!-- Bootstrap CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <!-- Bootstrap JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity=
             "sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-</head>
+    <!-- My CSS only -->
+    <link rel="stylesheet" href="../static/css/style.css" />
+  </head>
 
-<body>
-    <div class="main-container">
-        <div class="left-container  text-center">
-            <img src="../static/images/car.png" alt="gas station and car" width="600">
-            <h1>FUEL</h1>
-            <h3>price by province or city</h3>
-            <h2>now</h2>
-        </div>
+  <body>
+    <nav class="navbar-text bg-white fixed-top">
+        <h2 id="navtop"><a href="{{ url_for('home') }}" style="text-decoration: none;">FUEL PRICE HUNTER</a></h2>
+    </nav>
 
-        <div class="right-container text-center">
+    <div class="row" id='bg'>
             {% if not user_name %}
-                <div class="container mt-5">
-                  <div class="card">
-                    <div class="card-body">
-                      <h1 class="card-title">Hello, Guest!</h1>
-                      <p class="card-text">Welcome to our website. We're glad you're here!</p>
-                      <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
-                      <a href="{{ url_for('register') }}" class="btn btn-primary">Sign up</a>
-                    </div>
-                  </div>
-                </div>
-            {% else %}
-                <div>
-                    <div style="margin-bottom: 50px; text-align: end;"><a href="{{ url_for('logout') }}">Logout</a></div>
-                    <h1 class="card-title">Hello, {{ user_name }}!</h1>
-                    <form id="user_form" name="user_form" method="POST" action="{{ url_for('home') }}">
-                        <div class="mb-3 text-start">
-                            <label for="typeoffuel" class="form-label">Choose the type of fuel:</label>
-                            <select id="typeoffuel" class="form-select text-center" name="typeoffuel" required>
-                                {% if fuel %}
-                                    <option value="{{ fuel }}" selected>{{ fuel }}</option>
-                                {% else %}
-                                    <option value="" selected>Choose type of fuel...</option>
-                                {% endif %}
-                                {% for f in typesoffuel %}
-                                    <option value="{{ f }}">{{ f }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="mb-3 text-start">
-                            <label for="frequency" class="form-label">Choose the notification frequency: </label>
-                            <select id="frequency" class="form-select text-center" name="frequency" required>
-                                {% if freq %}
-                                    <option value="{{ freq }}" selected>{{ freq }}</option>
-                                {% else %}
-                                    <option value="" selected>Choose frequency...</option>
-                                {% endif %}
-                                {% for q in frequency %}
-                                    <option value="{{ q }}">{{ q }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="mb-3 text-start">
-                            <label for="province" class="form-label">Choose your province: </label>
-                            <select id="province" class="form-select text-center" name="province" required>
-                                {% if prov %}
-                                    <option value="{{ prov }}" selected>{{ prov }}</option>
-                                {% else %}
-                                    <option value="" selected>Choose province...</option>
-                                {% endif %}
-                                {% for p in provinces %}
-                                    <option value="{{ p }}">{{ p }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="mb-3 text-start">
-                            <label for="city" class="form-label">Choose your city: </label>
-                            <select id="city" class="form-select text-center" name="city" required>
-                              {% if city %}
-                                <option value="{{ city }}" selected>{{ city }}</option>
-                              {% else %}
-                                    <option value="" selected>Choose city...</option>
-                              {% endif %}
-                              {% for c in cities %}
-                                <option value="{{ c }}">{{ c }}</option>
-                              {% endfor %}
-                            </select>
-                        </div>
-                    <button class="btn btn-primary btn-lg" type="submit" form="user_form">Subscribe</button>
-                    <a href="{{ url_for('unsubscribe') }}">
-                      <button class="btn btn-warning btn-lg" type="button">Unsubscribe</button>
-                    </a>
-                    {% if gratulation == 'true' %}
-                        <h3 class="text-success">Subscribed!!!</h3>
-                    {% elif gratulation == 'false' %}
-                        <h3 class="text-warning">Unsubscribed!!!</h3>
-                    {% endif %}
-                    </form>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-</body>
+            <div class="d-flex justify-content-end" style="padding: 0;">
+                <div class="col-md-4 text-center" style="background-color: rgba(0,0,0,0.7); height: 100%; margin: 0 125px;">
+                    <h1 style="color: white; margin: 60px 0;font-size: 70px;">Save fuel</h1>
+                    <h5 style="color: white; margin: 0 30px 50px 30px;">This app can assist you in locating the nearest gas station with the most
+                        affordable prices and will notify you accordingly!</h5>
+                    <h6 style="color: white;">ONLY CANADA</h6>
 
-<script>
+                    <div class="d-flex justify-content-center">
+                      <a href="{{ url_for('login') }}" class="btn btn-info fw-semibold d-flex align-items-center justify-content-center text-center">Login</a>
+                      <a href="{{ url_for('register') }}" class="btn btn-info fw-semibold d-flex align-items-center justify-content-center text-center">Sign up</a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="row d-flex justify-content-around" style="margin: 0; padding: 0;">
+            <div class="col-md-4 text-center" style="height: 100%;">
+                <div class="note">
+                    <h6>  Please provide necessary information about frequency of notifications, type of fuel which
+                        you use, province and city of Canada, where you live. After push Subscribe button or
+                        Unsubscribe, if you wish stop sending notifications.
+                    </h6>
+                </div>
+                <div class="d-flex justify-content-center" style="position: relative; top: 40%;">
+                    {% if next_date %}
+                        <button id='sub' class="btn btn-info fw-semibold d-flex align-items-center justify-content-center text-center"
+                            type="submit" form="user_form" disabled>Subscribe</button>
+{#                        <a id='uns' href="{{ url_for('unsubscribe') }}" type="button" class="btn btn-warning fw-semibold d-flex align-items-center justify-content-center text-center">Unsubscribe</a>#}
+                        <a id='uns' href="{{ url_for('unsubscribe') }}" style="text-decoration: none;">
+                            <button class="btn btn-warning fw-semibold d-flex align-items-center justify-content-center text-center"
+                                    type="button">Unsubscribe</button>
+                        </a>
+                    {% endif %}
+                    {% if not next_date %}
+                        <button id='sub' class="btn btn-info fw-semibold d-flex align-items-center justify-content-center text-center"
+                            type="submit" form="user_form">Subscribe</button>
+{#                        <a id='uns' href="{{ url_for('unsubscribe') }}" type="button" class="btn btn-warning fw-semibold d-flex align-items-center justify-content-center text-center" disabled>Unsubscribe</a>#}
+                          <a id='uns' href="{{ url_for('unsubscribe') }}" style="text-decoration: none;">
+                            <button class="btn btn-warning fw-semibold d-flex align-items-center justify-content-center text-center"
+                                    type="button" disabled>Unsubscribe</button>
+                          </a>
+                    {% endif %}
+                </div>
+
+            </div>
+            <div class="col-md-4 text-center d-grid justify-content-around" style="background-color: rgba(0,0,0,0.7); height: 100%;">
+                <div style="margin: 20px 0; text-align: end;">
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
+                <h2 class="card-title text-white" style="margin-bottom: 20px;">Hello, {{ user_name }}!</h2>
+                <form id="user_form" name="user_form" method="POST" action="{{ url_for('home') }}">
+                    <div class="mb-3 d-grid justify-content-center">
+                        <label for="typeoffuel" class="form-label text-white">Choose the type of fuel:</label>
+                        <select id="typeoffuel" class="form-select text-center" name="typeoffuel" required>
+                            {% if fuel %}
+                                <option value="{{ fuel }}" selected>{{ fuel }}</option>
+                            {% else %}
+                                <option value="" selected>Choose type of fuel...</option>
+                            {% endif %}
+                            {% for f in typesoffuel %}
+                                <option value="{{ f }}">{{ f }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3 d-grid justify-content-center">
+                        <label for="frequency" class="form-label text-white">Choose the notification frequency: </label>
+                        <select id="frequency" class="form-select text-center" name="frequency" required>
+                            {% if freq %}
+                                <option value="{{ freq }}" selected>{{ freq }}</option>
+                            {% else %}
+                                <option value="" selected>Choose frequency...</option>
+                            {% endif %}
+                            {% for q in frequency %}
+                                <option value="{{ q }}">{{ q }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3 d-grid justify-content-center">
+                        <label for="province" class="form-label text-white">Choose your province: </label>
+                        <select id="province" class="form-select text-center" name="province" required>
+                            {% if prov %}
+                                <option value="{{ prov }}" selected>{{ prov }}</option>
+                            {% else %}
+                                <option value="" selected>Choose province...</option>
+                            {% endif %}
+                            {% for p in provinces %}
+                                <option value="{{ p }}">{{ p }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3 d-grid justify-content-center">
+                        <label for="city" class="form-label text-white">Choose your city: </label>
+                        <select id="city" class="form-select text-center" name="city" required>
+                          {% if city %}
+                            <option value="{{ city }}" selected>{{ city }}</option>
+                          {% else %}
+                                <option value="" selected>Choose city...</option>
+                          {% endif %}
+                          {% for c in cities %}
+                            <option value="{{ c }}">{{ c }}</option>
+                          {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+    <nav class="navbar-text bg-white fixed-bottom">
+        <h6 id="navbot">Developed by Anna</h6>
+    </nav>
+
+  </body>
+
+  <script>
     // get references to the select elements
     const provinceSelect = document.getElementById('province');
     const citySelect = document.getElementById('city');
@@ -142,6 +170,5 @@
 
         citySelect.style.width = "250px";
     });
-</script>
-
+  </script>
 </html>
