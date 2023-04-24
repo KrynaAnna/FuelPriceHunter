@@ -16,7 +16,7 @@ app.config['SECRET_KEY'] = '8BYkEfBA1O6do2nzWlSihBXox7C0hn4ksKR6b'
 Bootstrap(app)
 
 # Create database
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///data.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///instance/data.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
