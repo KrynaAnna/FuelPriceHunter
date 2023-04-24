@@ -1,5 +1,9 @@
 ### <a href="http://annak.pythonanywhere.com/">Use Web App</a>
-# Fuel Price Hunter
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/98818064/234134926-3b7bf138-a142-488b-9fc0-803706edb685.png" width="52px">
+  <br>
+  <strong>Fuel Price Hunter</strong>
+</p>
 
 ## Overview:
 This documentation outlines the features and functionality of the Fuel Price Hunter web app, including how to install and use it. The web app is written in Python language using Flask framework and utilizes the Courier API to send notifications by email. 
@@ -53,6 +57,7 @@ Notifications are sent via the send endpoint of the Courier API. To send a notif
 
 ## Design
 The design for the Fuel Subscription web app was created using Figma, and the front-end was built using HTML, CSS, JS, and Bootstrap.
+![figma](https://user-images.githubusercontent.com/98818064/234134810-9c5965f2-107e-438c-8699-f1096aa504e5.png)
 
 ## Deployment
 The Fuel Price Hunter web app is deployed on PythonAnywhere, a cloud-based Python web hosting service.
