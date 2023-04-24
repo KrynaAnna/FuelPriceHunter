@@ -1,16 +1,14 @@
 import copy
 import datetime
 import hashlib
-import json
 import os
 
-import requests
 from flask import Flask, redirect, render_template, request, session, url_for
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 
-from additional import provinces
+from additional import provinces, cities
 
 
 app = Flask(__name__)
@@ -18,13 +16,7 @@ app.config['SECRET_KEY'] = '8BYkEfBA1O6do2nzWlSihBXox7C0hn4ksKR6b'
 Bootstrap(app)
 
 # Create database
-<<<<<<< HEAD
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///data.db"
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://AnnaK:samurai17@AnnaK.mysql.pythonanywhere-services.com/AnnaK$data'
-=======
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://AnnaK:samurai17@AnnaK.mysql' \
-                                        '.pythonanywhere-services.com/AnnaK$data'
->>>>>>> 4536cd8e39dc8424017b48adb7c1679eaa3a0b08
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -56,15 +48,16 @@ def home():
         frequency = ['Every day', 'Once a week', 'Twice a month', 'Once a month']
         provinces_ = copy.deepcopy(provinces)
         if request.method == 'GET' and user.province:
-            url = "https://countriesnow.space/api/v0.1/countries/state/cities"
-            payload = {'country': "Canada", 'state': user.province}
-            response = requests.request("POST", url, data=payload)
-            cities = json.loads(response.text)['data']
+            # url = "https://countriesnow.space/api/v0.1/countries/state/cities"
+            # payload = {'country': "Canada", 'state': user.province}
+            # response = requests.request("POST", url, data=payload)
+            # cities = json.loads(response.text)['data']
+            cities_ = cities[user.province]
             return render_template('home.html',
                                    fuel=user.type_of_fuel, typesoffuel=typesoffuel,
                                    freq=user.frequency, frequency=frequency,
                                    prov=user.province, provinces=provinces_,
-                                   city=user.city, cities=cities, user_name=user.name, next_date=user.next_date)
+                                   city=user.city, cities=cities_, user_name=user.name, next_date=user.next_date)
         elif request.method == 'GET':
             return render_template('home.html',
                                    fuel='', typesoffuel=typesoffuel,
