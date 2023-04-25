@@ -12,7 +12,7 @@ from additional import provinces, cities
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA1O6do2nzWlSihBXox7C0hn4ksKR6b'
+app.config['SECRET_KEY'] = <SECRET_KEY>
 Bootstrap(app)
 
 # Create database
