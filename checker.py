@@ -20,7 +20,7 @@ date_yesterday = datetime.strptime('2022-11-03', '%Y-%m-%d')
 
 def get_info(province_, city_, fuel_):
     # Initialize the ApifyClient with your API token
-    client = ApifyClient("apify_api_7DKpNJdyHyY2a2rihOxwBSyG6Achjn3Wbj9u")
+    client = ApifyClient("apify_api_token")
 
     run_input = {
         "location": str(city_ + ', ' + province_),
@@ -58,7 +58,7 @@ def get_info(province_, city_, fuel_):
 
 # Sending notification by mail
 def send_mail(name_, email_, information_):
-    client = Courier(auth_token="pk_prod_G824KWJR0D4YTBJ1BR61893JYX8S")
+    client = Courier(auth_token="pk_prod_token")
 
     resp = client.send_message(
       message={
