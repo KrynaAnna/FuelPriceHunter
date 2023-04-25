@@ -12,7 +12,6 @@ It accesses the user data from a MySQL database table, uses the ApifyClient libr
 ## Features
 <li>User authentication: The web app allows users to create an account, login, and logout.
 <li>Fuel subscription: Once logged in, users can create a fuel subscription by selecting the type of fuel, province, city, and the frequency of notifications.
-<li>Notification settings: Users can customize their notification preferences by selecting the time of day to receive notifications and the email address to receive notifications.
 <li>Courier API integration: The web app utilizes the Courier API to send notifications to users via email.
 
 ## Usage
