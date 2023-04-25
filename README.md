@@ -35,7 +35,6 @@ It accesses the user data from a MySQL database table, uses the ApifyClient libr
 <li>Flask-SQLAlchemy 3.0.3
 <li>Trycourier 4.4.0
 <li>Apify-client 1.0.0
-<li>Requests 2.28.2
 
 ## Routes:
 <li>'/': The home page route.
